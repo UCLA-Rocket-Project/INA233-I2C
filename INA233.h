@@ -3,11 +3,13 @@
 #define INA233_I2C_H
 
 #include <Arduino.h>
-#include <SPI.h>
+#include <Wire.h>
 
 class INA233 {
     public:
 
+        INA233();
+        
     private:
 
 };
