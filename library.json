@@ -1,0 +1,22 @@
+{
+  "name": "INA233-I2C",
+  "description": "Driver for interfacing with INA233 current sense module over I2C on Arduino framework",
+  "authors":
+  [
+    {
+      "name": "lkross06",
+      "email": "lucaskalaniross@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/UCLA-Rocket-Project/INA233-I2C.git"
+  },
+  "version": "0.0.1",
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": "*",
+  "headers": "INA233.h"
+}
