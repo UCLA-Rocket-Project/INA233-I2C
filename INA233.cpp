@@ -3,7 +3,7 @@
 INA233::INA233(float shunt_resistance, float max_current_rating, ADDRESS_PIN A0, ADDRESS_PIN A1, TwoWire& wire) :
     _shunt_resistance(shunt_resistance),
     _max_current_rating(max_current_rating),
-    _wire(wire),
+    _wire(wire)
 {
     //get I2C address
     _addr = ADDRESS::TARGET_ADDRESS(A0, A1);
@@ -20,7 +20,8 @@ bool INA233::begin(){
     if (_addr < ADDRESS::MIN_I2C_ADDR || _addr > ADDRESS::MAX_I2C_ADDR) return false;
 
     //write to start i2c bus then calibration register (see 6.5.2)
-    return _wire.begin() && writeRegister(COMMAND::MFR_CALIBRATION, _calibration_register);
+    _wire.begin();
+    return writeRegister(COMMAND::MFR_CALIBRATION, _calibration_register);
 }
 
 //-------- public interface functions --------
@@ -92,7 +93,7 @@ bool INA233::writeRegister(uint8_t reg, uint16_t value){
     _wire.write((value >> 8) & 0xFF);
 
     return (_wire.endTransmission() == 0);
-};
+}
 
 bool INA233::readRegister(uint8_t reg, uint16_t& value){
     _wire.beginTransmission(_addr);
@@ -109,4 +110,4 @@ bool INA233::readRegister(uint8_t reg, uint16_t& value){
 
     value = (uint16_t)lsb | ((uint16_t)msb << 8);
     return true;
-};
+}
