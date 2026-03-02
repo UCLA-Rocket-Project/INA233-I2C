@@ -2,65 +2,113 @@
 
 #include <cmath>
 
+INA233::INA233(float shunt_resistance, float max_current_rating, TwoWire& wire, uint8_t addr) :
+    _shunt_resistance(shunt_resistance),
+    _max_current_rating(max_current_rating),
+    _wire(wire),
+    _addr(addr) 
+{
+    
+    _current_lsb = CALIBRATION::CURRENT_LSB(_max_current_rating);
+    _power_lsb = CALIBRATION::POWER_LSB(_current_lsb);
+    _calibration_register = CALIBRATION::CALIBRATION_REGISTER(_current_lsb, _shunt_resistance);
+}
+
 //-------- setup functions --------
 
 bool INA233::begin(){
-    _wire.begin();
-
-    _wire.beginTransmission(_addr);
-    return (_wire.endTransmission() == 0);  //see if device ACKs
+    //write to calibration register (see 6.5.2) and start i2c bus
+    return writeRegister(COMMAND::MFR_CALIBRATION, _calibration_register) && _wire.begin();
 }
 
 bool INA233::close(){
     return _wire.end();
 }
 
-//-------- instrumentation functions --------
+//-------- public interface functions --------
 
-float INA233::busVoltage_V(){
-    return 0.0f;
+int16_t INA233::busVoltage_raw(){
+    uint16_t value;
+    bool sts = readRegister(
+        COMMAND::READ_VIN,
+        value
+    );
+
+    return (sts)? (int16_t) value : 0;
 }
 
-float INA233::shuntVoltage_V(){
-    return 0.0f;
+int16_t INA233::shuntVoltage_raw(){
+    uint16_t value;
+    bool sts = readRegister(
+        COMMAND::MFR_READ_VSHUNT,
+        value
+    );
+
+    return (sts)? (int16_t) value : 0;
 }
 
-float INA233::current_A(){
-    return 0.0f;
+int16_t INA233::current_raw(){
+    uint16_t value;
+    bool sts = readRegister(
+        COMMAND::READ_IIN,
+        value
+    );
+
+    return (sts)? (int16_t) value : 0;
 }
 
-float INA233::power_W(){
-    return 0.0f;
+int16_t INA233::power_raw(){
+    uint16_t value;
+    bool sts = readRegister(
+        COMMAND::READ_PIN,
+        value
+    );
+
+    return (sts)? (int16_t) value : 0;
 }
 
-//-------- private functions --------
-
-/**
- * PMBus Linear11 format:
- * 
- * [15:11] exponent (signed 5-bit)
- * [10:0]  mantissa (signed 11-bit)
- */
-
-float INA233::linear11ToFloat(uint16_t raw){
-    int16_t exponent = (raw >> 11) & 0x1F;
-    if (exponent & 0x10) exponent |= 0xFFE0; //sign extend 5-bit
-
-    int16_t mantissa = raw & 0x07FF;
-    if (mantissa & 0x0400) mantissa |= 0xF800; //sign extend 11-bit
-
-    return mantissa * powf(2.0f, exponent);
+float INA233::busVoltage_V(int16_t raw){
+    return raw * _busVoltage_lsb;
 }
 
-uint16_t INA233::floatToLinear11(float value){
-    int8_t exponent = 0;
-    float mantissa = value;
-
-    while (fabs(mantissa) > 1023.0f){
-        mantissa /= 2.0f;
-        exponent++;
-    }
-
-    int16_t m = (int16_t) mantissa;
-    return ((exponent & 0x1F) << 11) | (m & 0x07FF);
+float INA233::shuntVoltage_V(int16_t raw){
+    return raw * _shuntVoltage_lsb;
 }
+
+float INA233::current_A(int16_t raw){
+    return raw * _current_lsb;
+}
+
+float INA233::power_W(int16_t raw){
+    return raw * _power_lsb;
+}
+
+//-------- private helper functions --------
+
+bool INA233::writeRegister(uint8_t reg, uint16_t value){
+    _wire.beginTransmission(_addr);
+    _wire.write(reg);
+
+    //little endian
+    _wire.write(value & 0xFF);
+    _wire.write((value >> 8) & 0xFF);
+
+    return (_wire.endTransmission() == 0);
+};
+
+bool INA233::readRegister(uint8_t reg, uint16_t& value){
+    _wire.beginTransmission(_addr);
+    _wire.write(reg);
+
+    if (_wire.endTransmission(false) != 0)
+        return false;
+
+    if (_wire.requestFrom(_addr, (uint8_t)2) != 2)
+        return false;
+
+    uint8_t lsb = _wire.read();
+    uint8_t msb = _wire.read();
+
+    value = (uint16_t)lsb | ((uint16_t)msb << 8);
+    return true;
+};
