@@ -84,7 +84,7 @@ float INA233::power_W(int16_t raw) const{
 
 //-------- private helper functions --------
 
-bool INA233::writeRegister(uint8_t reg, uint16_t value){
+bool INA233::writeRegister(uint8_t reg, uint16_t value) const{
     _wire.beginTransmission(_addr);
     _wire.write(reg);
 
@@ -95,7 +95,7 @@ bool INA233::writeRegister(uint8_t reg, uint16_t value){
     return (_wire.endTransmission() == 0);
 }
 
-bool INA233::readRegister(uint8_t reg, uint16_t& value){
+bool INA233::readRegister(uint8_t reg, uint16_t& value) const{
     _wire.beginTransmission(_addr);
     _wire.write(reg);
 

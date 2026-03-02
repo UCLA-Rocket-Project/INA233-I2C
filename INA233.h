@@ -123,7 +123,7 @@ class INA233 {
     private:
         //i2c interface
         TwoWire& _wire;
-        const uint8_t _addr;
+        uint8_t _addr;
 
         //calibration constants
         float _shunt_resistance;
@@ -137,8 +137,8 @@ class INA233 {
         uint16_t _calibration_register;
 
         //private helper functionss
-        bool writeRegister(uint8_t reg, uint16_t value);
-        bool readRegister(uint8_t reg, uint16_t& value);
+        bool writeRegister(uint8_t reg, uint16_t value) const;
+        bool readRegister(uint8_t reg, uint16_t& value) const;
 };
 
 #endif      //for INA233_I2C_H
