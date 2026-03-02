@@ -7,7 +7,6 @@
 
 //contains all PMBus command codes. see table 6-4
 namespace COMMAND {
-    //see table 6-4
     inline constexpr uint8_t CLEAR_FAULTS        = 0x03;
     inline constexpr uint8_t RESTORE_DEFAULT_ALL = 0x12;
     inline constexpr uint8_t CAPABILITY          = 0x19;
@@ -48,24 +47,23 @@ namespace COMMAND {
     inline constexpr uint8_t TI_MFR_REVISION     = 0xE2;
 }   //namespace COMMAND
 
+//contains all calibration-related macros/constants. see section 6.5.2
 namespace CALIBRATION {
-    //see section 6.5.2
-    inline constexpr float BUSVOLTAGE_LSB = 0.00125f;
-    inline constexpr float SHUNTVOLTAGE_LSB = 0.0000025f;
+    inline constexpr float BUSVOLTAGE_LSB        = 0.00125f;    //1.25 mV/bit
+    inline constexpr float SHUNTVOLTAGE_LSB      = 0.0000025f;  //2.5 uV/bit
 
-    //see equation 2
-    static constexpr float CURRENT_LSB(float MCR){ return MCR / 32768.0f; }
-    //see section 6.5.2
-    static constexpr float POWER_LSB(float CLSB){ return CLSB * 25.0f; }
-    //see equation 1
-    static constexpr uint16_t CALIBRATION_REGISTER(float CLSB, float SHRES){
-        return static_cast<uint16_t>(
-            0.00512f / (CLSB * SHRES)
-        );
+    static constexpr float CURRENT_LSB(float MCR){
+        return MCR / 32768.0f;
     }
-
+    static constexpr float POWER_LSB(float CLSB){
+        return CLSB * 25.0f;
+    }
+    static constexpr uint16_t CALIBRATION_REGISTER(float CLSB, float SHRES){
+        return (uint16_t) (0.00512f / (CLSB * SHRES));
+    }
 }   //namespace CALIBRATION
 
+//implements a single instance of an INA233 module over an I2C interface
 class INA233 {
     public:
         INA233(

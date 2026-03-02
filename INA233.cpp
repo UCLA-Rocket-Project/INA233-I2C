@@ -1,14 +1,12 @@
 #include <INA233.h>
 
-#include <cmath>
-
 INA233::INA233(float shunt_resistance, float max_current_rating, TwoWire& wire, uint8_t addr) :
     _shunt_resistance(shunt_resistance),
     _max_current_rating(max_current_rating),
     _wire(wire),
     _addr(addr) 
 {
-    
+    //setup calibration constants
     _current_lsb = CALIBRATION::CURRENT_LSB(_max_current_rating);
     _power_lsb = CALIBRATION::POWER_LSB(_current_lsb);
     _calibration_register = CALIBRATION::CALIBRATION_REGISTER(_current_lsb, _shunt_resistance);
