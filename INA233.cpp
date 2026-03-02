@@ -20,7 +20,7 @@ bool INA233::begin(){
     if (_addr < ADDRESS::MIN_I2C_ADDR || _addr > ADDRESS::MAX_I2C_ADDR) return false;
 
     //write to start i2c bus then calibration register (see 6.5.2)
-    _wire.begin();
+    _wire.begin(_addr);
     return writeRegister(COMMAND::MFR_CALIBRATION, _calibration_register);
 }
 
