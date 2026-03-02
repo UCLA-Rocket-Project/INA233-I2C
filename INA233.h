@@ -5,6 +5,37 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+//defines a mapping of address pins A0, A1 states to I2C address. see table 6-2
+enum class ADDRESS_PIN : uint8_t {
+    GND     = 0b00,
+    VS      = 0b01,
+    SDA     = 0b10,
+    SCL     = 0b11
+};
+
+//contains all possible TI-defined 7-bit I2C addresses. see table 6-2
+namespace ADDRESS {
+    /**
+     * Recall the four possible I2C signals: GND, VS, SDA, SCL
+     * 
+     * There are two address pins A0, A1 on the INA233, so 2^4 = 16
+     * possible combinations for I2C addresses.
+     * 
+     * They start at 0x40 = 0b0100 0000
+     */
+    inline constexpr uint8_t MAX_I2C_ADDR        = 0x77;
+    inline constexpr uint8_t MIN_I2C_ADDR        = 0x08;
+    inline constexpr uint8_t MASK_BASE           = 0x40;
+
+    //address is 0b0100[xx][yy], where xx comes from A1 and yy comes from A0
+    static constexpr uint8_t MASK_A0(ADDRESS_PIN mask){ return (uint8_t) mask << 0; }
+    static constexpr uint8_t MASK_A1(ADDRESS_PIN mask){ return (uint8_t) mask << 2; }
+
+    static constexpr uint8_t TARGET_ADDRESS(ADDRESS_PIN A0, ADDRESS_PIN A1){
+        return MASK_BASE | MASK_A1(A1) | MASK_A0(A0);
+    }
+}   //namespace ADDRESS
+
 //contains all PMBus command codes. see table 6-4
 namespace COMMAND {
     inline constexpr uint8_t CLEAR_FAULTS        = 0x03;
@@ -52,14 +83,15 @@ namespace CALIBRATION {
     inline constexpr float BUSVOLTAGE_LSB        = 0.00125f;    //1.25 mV/bit
     inline constexpr float SHUNTVOLTAGE_LSB      = 0.0000025f;  //2.5 uV/bit
 
-    static constexpr float CURRENT_LSB(float MCR){
-        return MCR / 32768.0f;
+    static constexpr float CURRENT_LSB(float mcr){
+        return mcr / 32768.0f;
     }
-    static constexpr float POWER_LSB(float CLSB){
-        return CLSB * 25.0f;
+    static constexpr float POWER_LSB(float c_lsb){
+        return c_lsb * 25.0f;
     }
-    static constexpr uint16_t CALIBRATION_REGISTER(float CLSB, float SHRES){
-        return (uint16_t) (0.00512f / (CLSB * SHRES));
+    static constexpr uint16_t CALIBRATION_REGISTER(float c_lsb, float sh_res){
+        //NOTE: +0.5f makes static cast round up
+        return static_cast<uint16_t>((0.00512f / (c_lsb * sh_res)) + 0.5f);
     }
 }   //namespace CALIBRATION
 
@@ -69,8 +101,9 @@ class INA233 {
         INA233(
             float shunt_resistance,
             float max_current_rating,
-            TwoWire& wire = Wire,
-            uint8_t addr = 0x40
+            ADDRESS_PIN A0 = ADDRESS_PIN::GND,
+            ADDRESS_PIN A1 = ADDRESS_PIN::GND,
+            TwoWire& wire = Wire
         );
 
         //setup
@@ -90,7 +123,7 @@ class INA233 {
     private:
         //i2c interface
         TwoWire& _wire;
-        uint8_t _addr;
+        const uint8_t _addr;
 
         //calibration constants
         float _shunt_resistance;
