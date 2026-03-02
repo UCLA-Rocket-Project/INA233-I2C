@@ -25,7 +25,7 @@ bool INA233::close(){
 
 //-------- public interface functions --------
 
-int16_t INA233::busVoltage_raw(){
+int16_t INA233::busVoltage_raw() const{
     uint16_t value;
     bool sts = readRegister(
         COMMAND::READ_VIN,
@@ -35,7 +35,7 @@ int16_t INA233::busVoltage_raw(){
     return (sts)? (int16_t) value : 0;
 }
 
-int16_t INA233::shuntVoltage_raw(){
+int16_t INA233::shuntVoltage_raw() const{
     uint16_t value;
     bool sts = readRegister(
         COMMAND::MFR_READ_VSHUNT,
@@ -45,7 +45,7 @@ int16_t INA233::shuntVoltage_raw(){
     return (sts)? (int16_t) value : 0;
 }
 
-int16_t INA233::current_raw(){
+int16_t INA233::current_raw() const{
     uint16_t value;
     bool sts = readRegister(
         COMMAND::READ_IIN,
@@ -55,7 +55,7 @@ int16_t INA233::current_raw(){
     return (sts)? (int16_t) value : 0;
 }
 
-int16_t INA233::power_raw(){
+int16_t INA233::power_raw() const{
     uint16_t value;
     bool sts = readRegister(
         COMMAND::READ_PIN,
@@ -65,19 +65,19 @@ int16_t INA233::power_raw(){
     return (sts)? (int16_t) value : 0;
 }
 
-float INA233::busVoltage_V(int16_t raw){
+float INA233::busVoltage_V(int16_t raw) const{
     return raw * _busVoltage_lsb;
 }
 
-float INA233::shuntVoltage_V(int16_t raw){
+float INA233::shuntVoltage_V(int16_t raw) const{
     return raw * _shuntVoltage_lsb;
 }
 
-float INA233::current_A(int16_t raw){
+float INA233::current_A(int16_t raw) const{
     return raw * _current_lsb;
 }
 
-float INA233::power_W(int16_t raw){
+float INA233::power_W(int16_t raw) const{
     return raw * _power_lsb;
 }
 

@@ -78,15 +78,15 @@ class INA233 {
         bool close();
 
         //public interface
-        int16_t busVoltage_raw();
-        int16_t shuntVoltage_raw();
-        int16_t current_raw();
-        int16_t power_raw();
+        int16_t busVoltage_raw() const;
+        int16_t shuntVoltage_raw() const;
+        int16_t current_raw() const;
+        int16_t power_raw() const;
 
-        float busVoltage_V(int16_t raw);
-        float shuntVoltage_V(int16_t raw);
-        float current_A(int16_t raw);
-        float power_W(int16_t raw);
+        float busVoltage_V(int16_t raw) const;
+        float shuntVoltage_V(int16_t raw) const;
+        float current_A(int16_t raw) const;
+        float power_W(int16_t raw) const;
         
     private:
         //i2c interface
@@ -97,8 +97,8 @@ class INA233 {
         float _shunt_resistance;
         float _max_current_rating;
 
-        float _busVoltage_lsb = CALIBRATION::BUSVOLTAGE_LSB;
-        float _shuntVoltage_lsb = CALIBRATION::SHUNTVOLTAGE_LSB;
+        const float _busVoltage_lsb = CALIBRATION::BUSVOLTAGE_LSB;
+        const float _shuntVoltage_lsb = CALIBRATION::SHUNTVOLTAGE_LSB;
         float _current_lsb;
         float _power_lsb;
 
