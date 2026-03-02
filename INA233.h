@@ -75,7 +75,6 @@ class INA233 {
 
         //setup
         bool begin();
-        bool close();
 
         //public interface
         int16_t busVoltage_raw() const;

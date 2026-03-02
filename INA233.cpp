@@ -15,12 +15,8 @@ INA233::INA233(float shunt_resistance, float max_current_rating, TwoWire& wire, 
 //-------- setup functions --------
 
 bool INA233::begin(){
-    //write to calibration register (see 6.5.2) and start i2c bus
-    return writeRegister(COMMAND::MFR_CALIBRATION, _calibration_register) && _wire.begin();
-}
-
-bool INA233::close(){
-    return _wire.end();
+    //write to start i2c bus then calibration register (see 6.5.2)
+    return _wire.begin() && writeRegister(COMMAND::MFR_CALIBRATION, _calibration_register);
 }
 
 //-------- public interface functions --------
