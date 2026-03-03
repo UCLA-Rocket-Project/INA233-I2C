@@ -10,9 +10,15 @@ INA233 ina(
     Wire
 );
 
+//Ares 2025-2026 Bodytube Analog Board v1.1
+#define SDA     42
+#define SCL     41
+
 void setup() {
+    delay(3000);
     Serial.begin(115200);
 
+    Wire.begin(SDA, SCL);
     if(!ina.begin()){
         Serial.println("Setup failed.");
         while(1);
