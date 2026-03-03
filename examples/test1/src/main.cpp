@@ -3,14 +3,14 @@
 #include <INA233.h>
 
 //Ares 2025-2026 Bodytube Analog Board v1.1
-#define SDA                    (int) 42             //ESP32 GPIO pins
-#define SCL                    (int) 41
+#define SDA     (int) 42                        //ESP32 GPIO pins
+#define SCL     (int) 41
 
-#define A0                      ADDRESS_PIN::GND    //both tied to GND
-#define A1                      ADDRESS_PIN::GND
+#define A0  ADDRESS_PIN::GND                    //both tied to GND
+#define A1  ADDRESS_PIN::GND
 
-#define RSHUNT                  (float) 0.027f      //from ERJ3BWFR027V 27mO shunt resistor
-#define MAX_CURRENT_RATING      (float) 4.0f
+#define RSHUNT              (float) 0.027f     //from ERJ3BWFR027V 27mO shunt resistor
+#define MAX_CURRENT_RATING  (float) 4.0f
 
 INA233 ina(
     RSHUNT,
