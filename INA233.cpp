@@ -19,8 +19,7 @@ INA233::INA233(float shunt_resistance, float max_current_rating, ADDRESS_PIN A0,
 bool INA233::begin(){
     if (_addr < ADDRESS::MIN_I2C_ADDR || _addr > ADDRESS::MAX_I2C_ADDR) return false;
 
-    //write to start i2c bus then calibration register (see 6.5.2)
-    _wire.begin(_addr);
+    //write to calibration register (see 6.5.2)
     return writeRegister(COMMAND::MFR_CALIBRATION, _calibration_register);
 }
 
