@@ -23,9 +23,9 @@ namespace ADDRESS {
      * 
      * They start at 0x40 = 0b0100 0000
      */
-    inline constexpr uint8_t MAX_I2C_ADDR        = 0x77;
-    inline constexpr uint8_t MIN_I2C_ADDR        = 0x08;
-    inline constexpr uint8_t MASK_BASE           = 0x40;
+    static constexpr uint8_t MAX_I2C_ADDR        = 0x77;
+    static constexpr uint8_t MIN_I2C_ADDR        = 0x08;
+    static constexpr uint8_t MASK_BASE           = 0x40;
 
     //address is 0b0100[xx][yy], where xx comes from A1 and yy comes from A0
     static constexpr uint8_t MASK_A0(ADDRESS_PIN mask){ return (uint8_t) mask << 0; }
@@ -38,50 +38,50 @@ namespace ADDRESS {
 
 //contains all PMBus command codes. see table 6-4
 namespace COMMAND {
-    inline constexpr uint8_t CLEAR_FAULTS        = 0x03;
-    inline constexpr uint8_t RESTORE_DEFAULT_ALL = 0x12;
-    inline constexpr uint8_t CAPABILITY          = 0x19;
+    static constexpr uint8_t CLEAR_FAULTS        = 0x03;
+    static constexpr uint8_t RESTORE_DEFAULT_ALL = 0x12;
+    static constexpr uint8_t CAPABILITY          = 0x19;
 
-    inline constexpr uint8_t IOUT_OC_WARN_LIMIT  = 0x4A;
-    inline constexpr uint8_t VIN_OV_WARN_LIMIT   = 0x57;
-    inline constexpr uint8_t VIN_UV_WARN_LIMIT   = 0x58;
-    inline constexpr uint8_t PIN_OP_WARN_LIMIT   = 0x6B;
+    static constexpr uint8_t IOUT_OC_WARN_LIMIT  = 0x4A;
+    static constexpr uint8_t VIN_OV_WARN_LIMIT   = 0x57;
+    static constexpr uint8_t VIN_UV_WARN_LIMIT   = 0x58;
+    static constexpr uint8_t PIN_OP_WARN_LIMIT   = 0x6B;
 
-    inline constexpr uint8_t STATUS_BYTE         = 0x78;
-    inline constexpr uint8_t STATUS_WORD         = 0x79;
-    inline constexpr uint8_t STATUS_IOUT         = 0x7B;
-    inline constexpr uint8_t STATUS_INPUT        = 0x7C;
-    inline constexpr uint8_t STATUS_CML          = 0x7E;
-    inline constexpr uint8_t STATUS_MFR_SPECIFIC = 0x80;
+    static constexpr uint8_t STATUS_BYTE         = 0x78;
+    static constexpr uint8_t STATUS_WORD         = 0x79;
+    static constexpr uint8_t STATUS_IOUT         = 0x7B;
+    static constexpr uint8_t STATUS_INPUT        = 0x7C;
+    static constexpr uint8_t STATUS_CML          = 0x7E;
+    static constexpr uint8_t STATUS_MFR_SPECIFIC = 0x80;
 
-    inline constexpr uint8_t READ_EIN            = 0x86;
-    inline constexpr uint8_t READ_VIN            = 0x88;
-    inline constexpr uint8_t READ_IIN            = 0x89;
-    inline constexpr uint8_t READ_VOUT           = 0x8B;
-    inline constexpr uint8_t READ_IOUT           = 0x8C;
+    static constexpr uint8_t READ_EIN            = 0x86;
+    static constexpr uint8_t READ_VIN            = 0x88;
+    static constexpr uint8_t READ_IIN            = 0x89;
+    static constexpr uint8_t READ_VOUT           = 0x8B;
+    static constexpr uint8_t READ_IOUT           = 0x8C;
 
-    inline constexpr uint8_t READ_POUT           = 0x96;
-    inline constexpr uint8_t READ_PIN            = 0x97;
+    static constexpr uint8_t READ_POUT           = 0x96;
+    static constexpr uint8_t READ_PIN            = 0x97;
 
-    inline constexpr uint8_t MFR_ID              = 0x99;
-    inline constexpr uint8_t MFR_MODEL           = 0x9A;
-    inline constexpr uint8_t MFR_REVISION        = 0x9B;
-    inline constexpr uint8_t MFR_ADC_CONFIG      = 0xD0;
-    inline constexpr uint8_t MFR_READ_VSHUNT     = 0xD1;
-    inline constexpr uint8_t MFR_ALERT_MASK      = 0xD2;
-    inline constexpr uint8_t MFR_CALIBRATION     = 0xD4;
-    inline constexpr uint8_t MFR_DEVICE_CONFIG   = 0xD5;
-    inline constexpr uint8_t CLEAR_EIN           = 0xD6;
+    static constexpr uint8_t MFR_ID              = 0x99;
+    static constexpr uint8_t MFR_MODEL           = 0x9A;
+    static constexpr uint8_t MFR_REVISION        = 0x9B;
+    static constexpr uint8_t MFR_ADC_CONFIG      = 0xD0;
+    static constexpr uint8_t MFR_READ_VSHUNT     = 0xD1;
+    static constexpr uint8_t MFR_ALERT_MASK      = 0xD2;
+    static constexpr uint8_t MFR_CALIBRATION     = 0xD4;
+    static constexpr uint8_t MFR_DEVICE_CONFIG   = 0xD5;
+    static constexpr uint8_t CLEAR_EIN           = 0xD6;
 
-    inline constexpr uint8_t TI_MFR_ID           = 0xE0;
-    inline constexpr uint8_t TI_MFR_MODEL        = 0xE1;
-    inline constexpr uint8_t TI_MFR_REVISION     = 0xE2;
+    static constexpr uint8_t TI_MFR_ID           = 0xE0;
+    static constexpr uint8_t TI_MFR_MODEL        = 0xE1;
+    static constexpr uint8_t TI_MFR_REVISION     = 0xE2;
 }   //namespace COMMAND
 
 //contains all calibration-related macros/constants. see section 6.5.2
 namespace CALIBRATION {
-    inline constexpr float BUSVOLTAGE_LSB        = 0.00125f;    //1.25 mV/bit
-    inline constexpr float SHUNTVOLTAGE_LSB      = 0.0000025f;  //2.5 uV/bit
+    static constexpr float BUSVOLTAGE_LSB        = 0.00125f;    //1.25 mV/bit
+    static constexpr float SHUNTVOLTAGE_LSB      = 0.0000025f;  //2.5 uV/bit
 
     static constexpr float CURRENT_LSB(float mcr){
         return mcr / 32768.0f;
