@@ -119,6 +119,34 @@ class INA233 {
         float shuntVoltage_V(int16_t raw) const;
         float current_A(int16_t raw) const;
         float power_W(int16_t raw) const;
+
+        void printCalibrationCoeffs() const {
+            Serial.print("Bus Voltage LSB:       ");
+            Serial.println(_busVoltage_lsb, 8);
+
+            Serial.print("Shunt Voltage LSB:     ");
+            Serial.println(_shuntVoltage_lsb, 8);
+
+            Serial.print("Current LSB:           ");
+            Serial.println(_current_lsb, 8);
+            
+            Serial.print("Power LSB:             ");
+            Serial.println(_power_lsb, 8);
+
+            Serial.print("Shunt Resistance:      ");
+            Serial.println(_shunt_resistance, 8);
+
+            Serial.print("Max Current Rating:    ");
+            Serial.println(_max_current_rating, 8);
+
+            Serial.print("Calibration Calc.:     0x");
+            Serial.println(_calibration_register, HEX);
+
+            uint16_t c;
+            readRegister(COMMAND::MFR_CALIBRATION, c);
+            Serial.print("Calibration Reg.:      0x");
+            Serial.println(c, HEX);
+        };
         
     private:
         //i2c interface

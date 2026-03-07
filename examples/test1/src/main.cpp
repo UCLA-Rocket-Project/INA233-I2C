@@ -9,8 +9,8 @@
 #define A0  ADDRESS_PIN::GND                    //both tied to GND
 #define A1  ADDRESS_PIN::GND
 
-#define RSHUNT              (float) 0.027f     //from ERJ3BWFR027V 27mO shunt resistor
-#define MAX_CURRENT_RATING  (float) 4.0f
+#define RSHUNT              (float) 0.027f     //from 27mO shunt resistor
+#define MAX_CURRENT_RATING  (float) 10.04f
 
 INA233 ina(
     RSHUNT,
@@ -31,6 +31,8 @@ void setup() {
     }
 
     Serial.println("Setup complete.");
+
+    ina.printCalibrationCoeffs();
 }
 
 void loop() {
@@ -45,6 +47,14 @@ void loop() {
 
     Serial.print(",\tCURR = ");
     Serial.println(curr);
+
+    int16_t raw_shunt = ina.shuntVoltage_raw();
+    float vshunt = ina.shuntVoltage_V(raw_shunt);
+
+    Serial.print("VSHUNT = ");
+    Serial.println(vshunt, 6);
+
+    Serial.println(ina.shuntVoltage_raw());
 
     delay(1000);
 }
